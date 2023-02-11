@@ -9,6 +9,10 @@ public class ImmutableCaseTest {
         writeStates(unsafeStates);
         readStates(unsafeStates);
 
+        FinalUnsafeStates finalUnsafeStates = new FinalUnsafeStates();
+        writeStates(finalUnsafeStates);
+        readStates(finalUnsafeStates);
+
         SafteStates safeStates = new SafteStates();
         writeStates(safeStates);
         readStates(safeStates);
@@ -49,6 +53,14 @@ class UnsafeStates implements States{
     private String[] states = new String[]{"AK", "AL"};
     public String getSateName(){
         return "UnSafeStates";
+    }
+    public String[] getStates(){return states;};
+}
+
+class FinalUnsafeStates implements States{
+    private String[] states = new String[]{"AK", "AL"};
+    public String getSateName(){
+        return "FinalUnSafeStates";
     }
     public String[] getStates(){return states;};
 }
