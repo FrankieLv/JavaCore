@@ -4,11 +4,11 @@ import java.util.Arrays;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class ImmutableCaseTest {
+public class SafeAndUnsafeStatesTest {
     ExecutorService executorService;
     public static void main(String[] args) {
-        ImmutableCaseTest immutableCaseTest = new ImmutableCaseTest();
-        immutableCaseTest.start();
+        SafeAndUnsafeStatesTest safeAndUnsafeStatesTest = new SafeAndUnsafeStatesTest();
+        safeAndUnsafeStatesTest.start();
     }
 
     private void start(){
