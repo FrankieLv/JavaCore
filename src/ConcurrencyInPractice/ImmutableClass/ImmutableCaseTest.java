@@ -58,7 +58,7 @@ class UnsafeStates implements States{
 }
 
 class FinalUnsafeStates implements States{
-    private String[] states = new String[]{"AK", "AL"};
+    private final String[] states = new String[]{"AK", "AL"};
     public String getSateName(){
         return "FinalUnSafeStates";
     }
