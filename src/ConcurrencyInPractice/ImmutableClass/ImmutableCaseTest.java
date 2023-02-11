@@ -5,38 +5,35 @@ import java.util.Arrays;
 public class ImmutableCaseTest {
 
     public static void main(String[] args) {
-        UnsafeStates unsafeStates = new UnsafeStates();
-        writeStates(unsafeStates);
-        readStates(unsafeStates);
-
-        FinalUnsafeStates finalUnsafeStates = new FinalUnsafeStates();
-        writeStates(finalUnsafeStates);
-        readStates(finalUnsafeStates);
-
-        SafteStates safeStates = new SafteStates();
-        writeStates(safeStates);
-        readStates(safeStates);
+        States[] allStates = new States[]{ new UnsafeStates(), new FinalUnsafeStates(), new SafteStates() };
+        writeStates(allStates);
+        readStates(allStates);
     }
 
-    private static void writeStates(States states){
+    private static void writeStates(States[] allStates){
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
-                states.getStates()[0] = "AAA";
+                for (States state: allStates) {
+                    state.getStates()[0] = "AAA";
+                }
+
             }
         });
 
         thread.start();
     }
 
-    private static void readStates(States states){
+    private static void readStates(States[] allStates){
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
-                if("AK".equals(states.getStates()[0])){
-                    System.out.println(states.getSateName() + ": Everything is good");
-                }else{
-                    System.out.println(states.getSateName() + ": Something is bad");
+                for (States states: allStates) {
+                    if("AK".equals(states.getStates()[0])){
+                        System.out.println(states.getSateName() + ": Everything is good");
+                    }else{
+                        System.out.println(states.getSateName() + ": Something is bad");
+                    }
                 }
             }
         });
