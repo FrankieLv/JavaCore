@@ -15,7 +15,7 @@ public class MapPerformanceTest {
         Map<String, String> synchronizedMap = Collections.synchronizedMap(new HashMap<String, String>());
         long synchronizedMapTime = timeTasks(synchronizedMap);
 
-        Map<String, String> concurrentMap = new ConcurrentHashMap(new HashMap<String, String>());
+        Map<String, String> concurrentMap = new ConcurrentHashMap();
         long concurrentMapTime = timeTasks(concurrentMap);
 
         comparePerformance(improvedMapTime, synchronizedMapTime, concurrentMapTime);
