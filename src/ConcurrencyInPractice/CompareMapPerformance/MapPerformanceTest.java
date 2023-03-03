@@ -4,47 +4,40 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CountDownLatch;
 
 public class MapPerformanceTest {
     public static void main(String[] args) throws InterruptedException{
+        TestHarness testHarness = new TestHarness();
+
+
         Map<String, String> improvedHashMap = new ImprovedHashMap<>(new HashMap());
-        long improvedMapTime = timeTasks(improvedHashMap);
+        long improvedMapTime = testMapPerformance(improvedHashMap);
 
         Map<String, String> synchronizedMap = Collections.synchronizedMap(new HashMap<String, String>());
-        long synchronizedMapTime = timeTasks(synchronizedMap);
+        long synchronizedMapTime = testMapPerformance(synchronizedMap);
 
         Map<String, String> concurrentMap = new ConcurrentHashMap();
-        long concurrentMapTime = timeTasks(concurrentMap);
+        long concurrentMapTime = testMapPerformance(concurrentMap);
 
         comparePerformance(improvedMapTime, synchronizedMapTime, concurrentMapTime);
     }
 
-    public static long timeTasks(Map<String, String> map) throws InterruptedException{
-        final CountDownLatch startGate = new CountDownLatch(1);
-        final CountDownLatch endGate = new CountDownLatch(20);
-        for(int i = 0; i < 20; i++){
-            Thread thread = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try{
-                        startGate.await();
-                        for (int j = 1; j <= 3000; j++) {
-                            map.put(j + "", j + "");
-                        }
-                        endGate.countDown();
-                    }catch(InterruptedException e){}
+    private static long testMapPerformance(Map<String, String> map) throws InterruptedException{
+        TestHarness testHarness = new TestHarness();
+
+        final Runnable mapTask = new Runnable() {
+            @Override
+            public void run() {
+                for(int i = 0;i< 3000;i++) {
+                    map.put(i + "", i + "");
                 }
-            });
-            thread.start();
-        }
-        long start = System.nanoTime();
-        startGate.countDown();
-        endGate.await();
-        long end = System.nanoTime();
-        return end - start;
+            }
+        };
+        return testHarness.timeTasks(30, mapTask);
     }
+
+ 
 
     private static void comparePerformance(long improvedMapTime, long synchronizedMapTime, long concurrentMapTime){
         if((improvedMapTime - synchronizedMapTime) > 0){
