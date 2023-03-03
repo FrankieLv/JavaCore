@@ -8,9 +8,6 @@ import java.util.concurrent.CountDownLatch;
 
 public class MapPerformanceTest {
     public static void main(String[] args) throws InterruptedException{
-        TestHarness testHarness = new TestHarness();
-
-
         Map<String, String> improvedHashMap = new ImprovedHashMap<>(new HashMap());
         long improvedMapTime = testMapPerformance(improvedHashMap);
 
