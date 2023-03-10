@@ -3,50 +3,39 @@ package ConcurrencyInPractice.CompareMapPerformance;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CountDownLatch;
 
 public class MapPerformanceTest {
-    public static void main(String[] args) throws InterruptedException{
+    public static void main(String[] args) throws InterruptedException, BrokenBarrierException{
+
         Map<String, String> improvedHashMap = new ImprovedHashMap<>(new HashMap());
-        long improvedMapTime = testMapPerformance(improvedHashMap);
-
         Map<String, String> synchronizedMap = Collections.synchronizedMap(new HashMap<String, String>());
-        long synchronizedMapTime = testMapPerformance(synchronizedMap);
-
         Map<String, String> concurrentMap = new ConcurrentHashMap();
-        long concurrentMapTime = testMapPerformance(concurrentMap);
 
-        comparePerformance(improvedMapTime, synchronizedMapTime, concurrentMapTime);
-    }
-
-    private static long testMapPerformance(Map<String, String> map) throws InterruptedException{
+        System.out.println("testHarness:");
         TestHarness testHarness = new TestHarness();
+        testMapPerformance(testHarness, improvedHashMap);
+        testMapPerformance(testHarness, synchronizedMap);
+        testMapPerformance(testHarness, concurrentMap);
 
-        final Runnable mapTask = new Runnable() {
-            @Override
-            public void run() {
-                for(int i = 0;i< 3000;i++) {
-                    map.put(i + "", i + "");
-                }
-            }
-        };
-        return testHarness.timeTasks(30, mapTask);
+        System.out.println("ImprovedTestHarness:");
+        ImprovedTestHarness improvedTestHarness = new ImprovedTestHarness();
+        testMapPerformance(improvedTestHarness, improvedHashMap);
+        testMapPerformance(improvedTestHarness, synchronizedMap);
+        testMapPerformance(improvedTestHarness, concurrentMap);
+
+
     }
 
- 
+    private static void testMapPerformance(Harness harness, Map<String, String> map) throws InterruptedException, BrokenBarrierException {
 
-    private static void comparePerformance(long improvedMapTime, long synchronizedMapTime, long concurrentMapTime){
-        if((improvedMapTime - synchronizedMapTime) > 0){
-            String result = "improvedMapTime < synchronizedMapTime";
-            if((synchronizedMapTime - concurrentMapTime) > 0){
-                result = result + " < concurrentMapTime";
-                System.out.println(result);
-            }else{
-                System.out.println("something wrong");
-            }
-        }else{
-            System.out.println("something wrong");
-        }
+        long time = harness.timeTasks(30, ()->{
+            for(int i = 0;i< 3000;i++) {
+            map.put(i + "", i + "");
+        }});
+        System.out.println(map.getClass().getName() + ":" + time);
+        map.clear();
     }
+
 }

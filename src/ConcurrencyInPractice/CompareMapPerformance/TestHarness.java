@@ -2,7 +2,7 @@ package ConcurrencyInPractice.CompareMapPerformance;
 
 import java.util.concurrent.CountDownLatch;
 
-public class TestHarness {
+public class TestHarness implements Harness{
     public long timeTasks(int threadCount, final Runnable task) throws InterruptedException {
         final CountDownLatch startGate = new CountDownLatch(1);
         final CountDownLatch endGate = new CountDownLatch(threadCount);
