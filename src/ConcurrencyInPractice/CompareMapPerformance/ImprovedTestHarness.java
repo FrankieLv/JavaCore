@@ -4,8 +4,8 @@ import java.util.concurrent.*;
 
 public class ImprovedTestHarness implements Harness{
     public long timeTasks(int taskCount, final Runnable task) throws InterruptedException, BrokenBarrierException {
-        final CyclicBarrier startGate = new CyclicBarrier(taskCount);
-        final CyclicBarrier endGate = new CyclicBarrier(taskCount);
+        final CyclicBarrier startGate = new CyclicBarrier(taskCount + 1);
+        final CyclicBarrier endGate = new CyclicBarrier(taskCount + 1);
 
         ExecutorService executor = Executors.newFixedThreadPool(taskCount);
 
