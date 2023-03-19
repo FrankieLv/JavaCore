@@ -7,7 +7,7 @@ public class ImprovedTestHarness implements Harness{
         final CyclicBarrier startGate = new CyclicBarrier(taskCount + 1);
         final CyclicBarrier endGate = new CyclicBarrier(taskCount + 1);
 
-        ExecutorService executor = Executors.newFixedThreadPool(10);
+        ExecutorService executor = Executors.newFixedThreadPool(4);
 
         try {
             for (int i = 0; i < taskCount; i++) {
