@@ -30,7 +30,7 @@ public class MapPerformanceTest {
 
     private static void testMapPerformance(Harness harness, Map<String, String> map) throws InterruptedException, BrokenBarrierException {
 
-        long time = harness.timeTasks(30, 20,()->{
+        long time = harness.timeTasks(30, ()->{
             for(int i = 0; i< 3000; i++) {
             map.put(i + "", i + "");
         }});

@@ -3,11 +3,11 @@ package ConcurrencyInPractice.CompareMapPerformance;
 import java.util.concurrent.*;
 
 public class ImprovedTestHarness implements Harness{
-    public long timeTasks(int taskCount, int timeoutInSeconds, final Runnable task) throws InterruptedException, BrokenBarrierException {
+    public long timeTasks(int taskCount, final Runnable task) throws InterruptedException, BrokenBarrierException {
         final CyclicBarrier startGate = new CyclicBarrier(taskCount + 1);
         final CyclicBarrier endGate = new CyclicBarrier(taskCount + 1);
 
-        ExecutorService executor = Executors.newFixedThreadPool(10);
+        ExecutorService executor = Executors.newFixedThreadPool(taskCount);
 
         try {
             for (int i = 0; i < taskCount; i++) {
@@ -15,16 +15,52 @@ public class ImprovedTestHarness implements Harness{
                     try {
                         startGate.await();
                         try {
-                            Future<?> future = executor.submit(task);
-                            try{
-                                future.get(timeoutInSeconds, TimeUnit.SECONDS);
-                            }catch (ExecutionException executionException){
-                                executionException.printStackTrace();
-                            }catch (TimeoutException timeoutException){
-                                future.cancel(true);
-                            }
+                            task.run();
                         } finally {
                             endGate.await();
+                        }
+                    } catch (InterruptedException | BrokenBarrierException ignore) {
+                    }
+                });
+
+
+
+            }
+
+            long startTime = System.nanoTime();
+            startGate.await();
+            endGate.await();
+            long endTime = System.nanoTime();
+
+            return endTime - startTime;
+        } finally {
+            executor.shutdown();
+        }
+    }
+
+    public long timeTasks(int taskCount, int timeoutInSeconds, final Runnable task) throws InterruptedException, BrokenBarrierException {
+        final CyclicBarrier startGate = new CyclicBarrier(taskCount + 1);
+        final CyclicBarrier endGate = new CyclicBarrier(taskCount + 1);
+
+        ExecutorService executor = Executors.newFixedThreadPool(taskCount);
+
+        try {
+            for (int i = 0; i < taskCount; i++) {
+                executor.submit(() -> {
+                    try {
+                        startGate.await();
+                        System.out.println(Thread.currentThread().getName() + "start time:" + System.currentTimeMillis());
+                        ExecutorService singleExecutor = Executors.newSingleThreadExecutor();
+                        Future<?> future = singleExecutor.submit(task);
+                        try {
+                            future.get(timeoutInSeconds, TimeUnit.SECONDS);
+                        }catch (ExecutionException executionException){
+                            executionException.printStackTrace();
+                        }catch (TimeoutException timeoutException){
+                            future.cancel(true);
+                        }finally{
+                            singleExecutor.shutdown();
+                            endGate.await(); 
                         }
                     } catch (InterruptedException | BrokenBarrierException ignore) {
                     }

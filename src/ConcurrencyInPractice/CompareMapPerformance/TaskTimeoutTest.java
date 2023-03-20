@@ -1,10 +1,8 @@
 package ConcurrencyInPractice.CompareMapPerformance;
 
-import java.util.Map;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.TimeUnit;
 
-import static java.lang.Thread.sleep;
 
 public class TaskTimeoutTest {
     public static void main(String[] args) throws BrokenBarrierException, InterruptedException {
@@ -19,7 +17,7 @@ public class TaskTimeoutTest {
 
     private static void testCancelTask(Harness harness, int timeoutIndSeconds, int processTimeInSeconds) throws InterruptedException, BrokenBarrierException {
 
-            long timeCost = harness.timeTasks(2, timeoutIndSeconds, ()->{
+            long timeCost = harness.timeTasks(5, timeoutIndSeconds, ()->{
                 try{
                     TimeUnit.SECONDS.sleep(processTimeInSeconds);
                 }catch(InterruptedException interruptedException){
