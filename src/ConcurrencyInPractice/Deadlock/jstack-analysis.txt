@@ -1,0 +1,33 @@
+Found one Java-level deadlock:
+=============================
+"pool-1-thread-1":
+  waiting to lock monitor 0x00000284393cd700 (object 0x0000000623daa058, a java.lang.Object),
+  which is held by "pool-1-thread-2"
+"pool-1-thread-2":
+  waiting to lock monitor 0x00000284393cf700 (object 0x0000000623daa048, a java.lang.Object),
+  which is held by "pool-1-thread-1"
+
+Java stack information for the threads listed above:
+===================================================
+"pool-1-thread-1":
+	at ConcurrencyInPractice.Deadlock.DeadLockTest.lambda$0(DeadLockTest.java:18)
+	- waiting to lock <0x0000000623daa058> (a java.lang.Object)
+	- locked <0x0000000623daa048> (a java.lang.Object)
+	at ConcurrencyInPractice.Deadlock.DeadLockTest$$Lambda$1/0x0000000800060840.run(Unknown Source)
+	at java.util.concurrent.Executors$RunnableAdapter.call(java.base@11.0.18/Executors.java:515)
+	at java.util.concurrent.FutureTask.run(java.base@11.0.18/FutureTask.java:264)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(java.base@11.0.18/ThreadPoolExecutor.java:1128)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(java.base@11.0.18/ThreadPoolExecutor.java:628)
+	at java.lang.Thread.run(java.base@11.0.18/Thread.java:829)
+"pool-1-thread-2":
+	at ConcurrencyInPractice.Deadlock.DeadLockTest.lambda$1(DeadLockTest.java:32)
+	- waiting to lock <0x0000000623daa048> (a java.lang.Object)
+	- locked <0x0000000623daa058> (a java.lang.Object)
+	at ConcurrencyInPractice.Deadlock.DeadLockTest$$Lambda$2/0x0000000800063040.run(Unknown Source)
+	at java.util.concurrent.Executors$RunnableAdapter.call(java.base@11.0.18/Executors.java:515)
+	at java.util.concurrent.FutureTask.run(java.base@11.0.18/FutureTask.java:264)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(java.base@11.0.18/ThreadPoolExecutor.java:1128)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(java.base@11.0.18/ThreadPoolExecutor.java:628)
+	at java.lang.Thread.run(java.base@11.0.18/Thread.java:829)
+
+Found 1 deadlock.
